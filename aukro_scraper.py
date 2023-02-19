@@ -26,13 +26,8 @@ broad_count = broad_html[broad_count_start_index:broad_count_end_index].split('>
 broad_count = ''.join(filter(str.isdigit, broad_count))
 
 # Extract the values of class "buy-price" from the HTML, including the time left in minutes
-broad_prices = re.findall(r'(?:přihazuj.{0,90})\s*<p\s+class="buy-price">\s*([\d\s]+)\s*Kč\s*<.*?(?=min.{0,90}).*?(class="time-to-end hidden-min-tablet">\s*(\d+)\s*min)?', broad_html)
-
-filtered_broad_prices = []  # Initialize an empty list to store the filtered prices
-for price, time_left in broad_prices:  # Iterate through each price and time_left pair in broad_prices
-    if time_left is not None and int(time_left) <= 20:  # Check if time_left is not None and is less than or equal to 20
-        filtered_broad_prices.append(re.sub('[^0-9]', '', price))  # If both conditions are met, add the price to the filtered_broad_prices list
-broad_prices = filtered_broad_prices  # Update broad_prices to contain only the filtered prices
+broad_prices = re.findall(r'(?<=přihazuj).*?(\d[\d\s]*)\s*Kč\s*(?=.*?min)(?=.*?(?:méně než minuta|\d{1,2} min))', broad_html)
+broad_prices = [int(re.sub(r'\s', '', price)) for price in broad_prices]
 
 # Get the count of the prices (should be around 14 of them)
 broad_price_count = len(broad_prices)
@@ -51,13 +46,8 @@ narrow_count = narrow_html[narrow_count_start_index:narrow_count_end_index].spli
 narrow_count = ''.join(filter(str.isdigit, narrow_count))
 
 # Extract the values of class "buy-price" from the HTML, including the time left in minutes
-narrow_prices = re.findall(r'(?:přihazuj.{0,90})\s*<p\s+class="buy-price">\s*([\d\s]+)\s*Kč\s*<.*?(?=min.{0,90}).*?(class="time-to-end hidden-min-tablet">\s*(\d+)\s*min)?', narrow_html)
-
-filtered_narrow_prices = []  # Initialize an empty list to store the filtered prices
-for price, time_left in narrow_prices:  # Iterate through each price and time_left pair in narrow_prices
-    if time_left is not None and int(time_left) <= 20:  # Check if time_left is not None and is less than or equal to 20
-        filtered_narrow_prices.append(re.sub('[^0-9]', '', price))  # If both conditions are met, add the price to the filtered_narrow_prices list
-narrow_prices = filtered_narrow_prices  # Update narrow_prices to contain only the filtered prices
+narrow_prices = re.findall(r'(?<=přihazuj).*?(\d[\d\s]*)\s*Kč\s*(?=.*?min)(?=.*?(?:méně než minuta|\d{1,2} min))', narrow_html)
+narrow_prices = [int(re.sub(r'\s', '', price)) for price in narrow_prices]
 
 # Get the count of the prices
 narrow_price_count = len(narrow_prices)
